@@ -1,0 +1,8 @@
+CHANGELOG.rdoc
+Manifest.txt
+README.rdoc
+Rakefile
+lib/modelizer.rb
+rails/init.rb
+test/helper.rb
+test/modelizer_test.rb

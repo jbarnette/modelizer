@@ -1,0 +1,85 @@
+= Modelizer
+
+Need a simple, consistent way to create model instances in your Rails
+tests? Use the Modelizer.
+
+== Examples
+
+First, define a model template. I generally do this in the unit test
+for the model until I need to use the template somewhere else. As soon
+as it's used in multiple places, I move it to a reopened
+<tt>Test::Unit::TestCase</tt> in <tt>test/test_helper.rb</tt>.
+
+    class UserTest < ActiveSupport::TestCase
+
+      # a simple list of attributes
+      model_template_for User, :name => "Bob"
+
+      # or a block for lazy evaluation
+      model_template_for User do
+        { :name => "Bob", :address => addresses(:default) }
+      end
+
+    end
+
+This declaration generates a bunch of instance methods for you:
+
+* def valid_user_attributes(extras = {})
+* def valid_user_attributes_without(*excluded)
+* def new_user(extras = {})
+* def new_user_without(*excluded)
+* def create_user(extras = {})
+* def create_user!(extras = {})
+* def create_user_without(*excluded)
+* def create_user_without!(*excluded)
+
+It also generates a test to make sure your model template is valid.
+
+=== Using in Tests
+
+It's really simple: these methods are just simple helpers for model
+creation:
+
+    class UserTest < ActiveSupport::TestCase
+      model_template_for User, :name => "Bob"
+
+      def test_pointless_stuff
+        assert new_user.valid?
+        assert !new_user_without(:name).valid?
+
+        assert !create_user.new_record?
+
+        assert_raise do
+          create_user_without! :name
+        end
+
+        assert_equal "Fred", new_user(:name => "Fred").name
+      end
+    end
+
+== Installation
+
+    $ sudo gem install modelizer
+
+== License
+
+Copyright 2009 John Barnette (jbarnette@rubyforge.org)
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
