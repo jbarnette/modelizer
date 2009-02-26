@@ -37,8 +37,7 @@ It also generates a test to make sure your model template is valid.
 
 === Using in Tests
 
-It's really simple: these methods are just simple helpers for model
-creation:
+These methods are just simple helpers for model creation:
 
     class UserTest < ActiveSupport::TestCase
       model_template_for User, :name => "Bob"
