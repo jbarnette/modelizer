@@ -2,7 +2,7 @@ require "minitest/unit"
 require "activesupport"
 require "modelizer"
 
-class TestModelizer < MiniTest::Unit::TestCase
+class ModelizerTest < MiniTest::Unit::TestCase
   def setup
     @klass = Class.new
     @klass.send :include, Modelizer

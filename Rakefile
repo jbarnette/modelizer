@@ -1,7 +1,7 @@
 require "rubygems"
 require "hoe"
 
-Hoe.new "modelizer", "1.0.0" do |p|
+Hoe.new "modelizer", "1.1.0" do |p|
   p.developer "John Barnette", "jbarnette@rubyforge.org"
 
   p.url              = "http://github.com/jbarnette/modelizer"

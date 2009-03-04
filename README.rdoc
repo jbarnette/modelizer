@@ -1,7 +1,7 @@
 = Modelizer
 
-Need a simple, consistent way to create model instances in your Rails
-tests? Use the Modelizer.
+Need a simple, consistent way to create model instances and check
+validations in your Rails tests? Use the Modelizer.
 
 == Examples
 
@@ -35,16 +35,22 @@ This declaration generates a bunch of instance methods for you:
 
 It also generates a test to make sure your model template is valid.
 
-=== Using in Tests
+=== Custom Assertions
 
-These methods are just simple helpers for model creation:
+Modelizer adds one additional assertion, <tt>assert_invalid</tt>.
+
+    assert_invalid(:email, model, /is bad/)
+
+The third argument is optional.
+
+=== Using in Tests
 
     class UserTest < ActiveSupport::TestCase
       model_template_for User, :name => "Bob"
 
       def test_pointless_stuff
         assert new_user.valid?
-        assert !new_user_without(:name).valid?
+        assert_invalid :name, new_user_without(:name)
 
         assert !create_user.new_record?
 
