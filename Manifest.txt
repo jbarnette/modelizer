@@ -4,6 +4,7 @@ README.rdoc
 Rakefile
 lib/modelizer.rb
 lib/modelizer/assertions.rb
+lib/modelizer/validations.rb
 rails/init.rb
 test/modelizer/assertions_test.rb
 test/modelizer_test.rb
