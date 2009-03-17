@@ -1,3 +1,7 @@
+=== 1.1.1 (2009-03-16)
+
+* Fixed <tt>assert_invalid</tt>'s misleading message.
+
 === 1.1.0 (2009-03-04)
 
 * Added <tt>assert_invalid</tt>.

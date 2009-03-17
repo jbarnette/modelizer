@@ -1,7 +1,8 @@
 module Modelizer
   module Assertions
     def assert_invalid attribute, model, match = nil
-      assert !model.valid?, "#{model.class.name} should be valid, but isn't."
+      assert !model.valid?,
+        "#{model.class.name} should have invalid #{attribute}, but it's valid."
 
       assert !model.errors.on(attribute).blank?,
       "No error on #{attribute}, but: " +
