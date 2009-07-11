@@ -6,7 +6,7 @@ require "modelizer/validations"
 module Modelizer
 
   # Duh.
-  VERSION = "1.2.0"
+  VERSION = "1.3.0"
 
   include Modelizer::Assertions
 
