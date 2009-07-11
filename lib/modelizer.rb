@@ -1,9 +1,15 @@
+require "modelizer/assertions"
+require "modelizer/validations"
+
 module Modelizer
+  include Modelizer::Assertions
+
   @@cache = {}
   def self.cache; @@cache end
 
   def self.included target
     target.extend ClassMethods
+    target.extend Modelizer::Validations
   end
 
   def assign_model_template_attributes model, attributes
@@ -26,7 +32,7 @@ module Modelizer
   module ClassMethods
     def model_template_for klass, defaults = {}, &block
       if defaults.empty? && !block
-        raise "default attributes or lazy block required"
+        raise ArgumentError, "default attributes or lazy block required"
       end
 
       ::Modelizer.cache[klass] = [defaults, block]
@@ -78,7 +84,7 @@ module Modelizer
       file, line = caller.first.split ":"
       line = line.to_i
 
-      test =<<-END
+      test = <<-END
         def test_model_template_for_#{model}
           assert (m = new_#{model}).valid?,
             "#{klass} template is invalid: " +
@@ -86,7 +92,7 @@ module Modelizer
         end
       END
 
-      if self == Test::Unit::TestCase
+      if [Test::Unit::TestCase, ActiveSupport::TestCase].include? self
         eval <<-END, nil, file, line - 2
           class ::ModelTemplateFor#{klass}Test < ActiveSupport::TestCase
             #{test}
