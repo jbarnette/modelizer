@@ -8,6 +8,8 @@ module Modelizer
         raise "no model template for #{@klass.name}"
       end
 
+      # FIX: location in original test file
+
       validations.each do |v|
         test = send "validation_lambda_for_#{v}", @klass, @model, attribute
         define_method "test_#{attribute}_#{v}", &test
@@ -18,7 +20,7 @@ module Modelizer
 
     def validation_lambda_for_presence klass, model, attribute
       lambda do
-        assert_invalid attribute, send("new_#{model}_without", attribute)
+        assert_invalid attribute, send("new_#{model}", attribute => nil)
       end
     end
 
