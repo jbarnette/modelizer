@@ -1,15 +1,15 @@
-=== 1.2.0 (2009-03-17)
+=== 1.2.0 / 2009-03-17
 
 * Added a simple stab at some validation tests.
 
-=== 1.1.1 (2009-03-16)
+=== 1.1.1 / 2009-03-16
 
 * Fixed <tt>assert_invalid</tt>'s misleading message.
 
-=== 1.1.0 (2009-03-04)
+=== 1.1.0 / 2009-03-04
 
 * Added <tt>assert_invalid</tt>.
 
-=== 1.0.0 (2009-02-24)
+=== 1.0.0 / 2009-02-24
 
 * Birthday!

@@ -1,8 +1,7 @@
-require "minitest/unit"
-require "activesupport"
+require "minitest/autorun"
 require "modelizer"
 
-class ModelizerTest < MiniTest::Unit::TestCase
+class TestModelizer < MiniTest::Unit::TestCase
   def setup
     @klass = Class.new
     @klass.send :include, Modelizer

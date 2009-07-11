@@ -1,9 +1,8 @@
-require "minitest/unit"
-require "activesupport"
+require "minitest/autorun"
 require "modelizer/assertions"
 
 module Modelizer
-  class AssertionsTest < MiniTest::Unit::TestCase
+  class TestAssertions < MiniTest::Unit::TestCase
     include Modelizer::Assertions
 
     class MockModel

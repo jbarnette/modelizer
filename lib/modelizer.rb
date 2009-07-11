@@ -1,7 +1,13 @@
+require "activesupport"
+
 require "modelizer/assertions"
 require "modelizer/validations"
 
 module Modelizer
+
+  # Duh.
+  VERSION = "1.2.0"
+
   include Modelizer::Assertions
 
   @@cache = {}

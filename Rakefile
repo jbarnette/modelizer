@@ -1,14 +1,13 @@
 require "rubygems"
 require "hoe"
 
-Hoe.new "modelizer", "1.2.0" do |p|
-  p.developer "John Barnette", "jbarnette@rubyforge.org"
+Hoe.plugin :doofus, :git
 
-  p.url              = "http://github.com/jbarnette/modelizer"
-  p.history_file     = "CHANGELOG.rdoc"
-  p.readme_file      = "README.rdoc"
-  p.extra_rdoc_files = [p.readme_file]
-  p.need_tar         = false
-  p.test_globs       = %w(test/**/*_test.rb)
-  p.testlib          = :minitest
+Hoe.spec "modelizer" do
+  developer "John Barnette", "jbarnette@rubyforge.org"
+
+  self.extra_rdoc_files = FileList["*.rdoc"]
+  self.history_file     = "CHANGELOG.rdoc"
+  self.readme_file      = "README.rdoc"
+  self.testlib          = :minitest
 end

@@ -1,14 +1,24 @@
 = Modelizer
 
+* http://github.com/jbarnette/modelizer
+
+== Description
+
 Need a simple, consistent way to create model instances and check
 validations in your Rails tests? Use the Modelizer.
 
 == Examples
 
-First, define a model template. I generally do this in the unit test
+First, enable the Modelizer. I do it in <tt>test/test_helper.rb</tt>:
+
+    class ActiveSupport::TestCase
+      include Modelizer
+    end
+
+Next, define a model template. I generally do this in the unit test
 for the model until I need to use the template somewhere else. As soon
 as it's used in multiple places, I move it to a reopened
-<tt>Test::Unit::TestCase</tt> in <tt>test/test_helper.rb</tt>.
+<tt>ActiveSupport::TestCase</tt> in <tt>test/test_helper.rb</tt>.
 
     class UserTest < ActiveSupport::TestCase
 
@@ -24,14 +34,14 @@ as it's used in multiple places, I move it to a reopened
 
 This declaration generates a bunch of instance methods for you:
 
-* def valid_user_attributes(extras = {})
-* def valid_user_attributes_without(*excluded)
-* def new_user(extras = {})
-* def new_user_without(*excluded)
-* def create_user(extras = {})
-* def create_user!(extras = {})
-* def create_user_without(*excluded)
-* def create_user_without!(*excluded)
+* <tt>def valid_user_attributes(extras = {})</tt>
+* <tt>def valid_user_attributes_without(*excluded)</tt>
+* <tt>def new_user(extras = {})</tt>
+* <tt>def new_user_without(*excluded)</tt>
+* <tt>def create_user(extras = {})</tt>
+* <tt>def create_user!(extras = {})</tt>
+* <tt>def create_user_without(*excluded)</tt>
+* <tt>def create_user_without!(*excluded)</tt>
 
 It also generates a test to make sure your model template is valid.
 
@@ -39,7 +49,7 @@ It also generates a test to make sure your model template is valid.
 
 Modelizer adds one additional assertion, <tt>assert_invalid</tt>.
 
-    assert_invalid(:email, model, /is bad/)
+    assert_invalid :email, model, /is bad/
 
 The third argument is optional.
 
