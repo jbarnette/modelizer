@@ -6,7 +6,7 @@ require "modelizer/validations"
 module Modelizer
 
   # Duh.
-  VERSION = "1.3.1"
+  VERSION = "1.3.2"
 
   include Modelizer::Assertions
 
@@ -37,7 +37,7 @@ module Modelizer
 
   module ClassMethods
     def model_template_for klass, defaults = {}, &block
-      if defaults.empty? && !block
+      if defaults.nil? && !block
         raise ArgumentError, "default attributes or lazy block required"
       end
 
