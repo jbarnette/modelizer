@@ -74,11 +74,11 @@ The third argument is optional.
 
 == Installation
 
-    $ sudo gem install modelizer
+    $ gem install modelizer
 
 == License
 
-Copyright 2009 John Barnette (jbarnette@rubyforge.org)
+Copyright 2009-10 John Barnette (code@jbarnette.com)
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

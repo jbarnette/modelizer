@@ -4,7 +4,7 @@ require "hoe"
 Hoe.plugin :doofus, :git
 
 Hoe.spec "modelizer" do
-  developer "John Barnette", "jbarnette@rubyforge.org"
+  developer "John Barnette", "code@jbarnette.com"
 
   self.extra_rdoc_files = FileList["*.rdoc"]
   self.history_file     = "CHANGELOG.rdoc"
