@@ -1,12 +1,10 @@
-require "active_support"
-
 require "modelizer/assertions"
 require "modelizer/validations"
 
 module Modelizer
 
   # Duh.
-  VERSION = "1.3.2"
+  VERSION = "2.0.0"
 
   include Modelizer::Assertions
 
@@ -16,6 +14,14 @@ module Modelizer
   def self.included target
     target.extend ClassMethods
     target.extend Modelizer::Validations
+  end
+
+  def self.underscore classname
+    classname.gsub(/::/, '_').
+      gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
+      gsub(/([a-z\d])([A-Z])/,'\1_\2').
+      tr("-", "_").
+      downcase
   end
 
   def assign_model_template_attributes model, attributes
@@ -44,7 +50,7 @@ module Modelizer
       ::Modelizer.cache[klass] = [defaults, block]
 
       klass = klass.name
-      model = klass.underscore.tr "/", "_"
+      model = ::Modelizer.underscore klass
 
       module_eval <<-END, __FILE__, __LINE__ + 1
         def valid_#{model}_attributes extras = {}

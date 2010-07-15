@@ -2,7 +2,7 @@ module Modelizer
   module Validations
     def test_validations_for attribute, *validations
       @klass ||= name.gsub(/Test$/, "").constantize
-      @model ||= @klass.name.underscore.tr("/", "_")
+      @model ||= ::Modelizer.underscore @klass.name
 
       unless instance_methods.collect { |m| m.to_s }.include? "new_#{@model}"
         raise "no model template for #{@klass.name}"
