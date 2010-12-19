@@ -65,9 +65,9 @@ module Modelizer
 
       ::Modelizer.cache[klass] = [defaults, block]
 
-      klass = klass.name
+      klass   = klass.name
       nsklass = Modelizer.namespace? ? klass : klass.split("::").last
-      model = ::Modelizer.underscore nsklass
+      model   = ::Modelizer.underscore nsklass
 
       module_eval <<-END, __FILE__, __LINE__ + 1
         def valid_#{model}_attributes extras = {}
