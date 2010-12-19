@@ -1,3 +1,9 @@
+=== 3.0.0 / 2010-12-18
+
+* Remove ill-advised namespace= introduced in 2.1.0.
+* Add public API for class -> method name transformations.
+* Remove assert_not_nil assumption.
+
 === 2.1.0 / 2010-12-18
 
 * Allow namespaces in helper names to be disabled.
