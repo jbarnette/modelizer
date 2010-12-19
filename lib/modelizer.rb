@@ -28,6 +28,10 @@ module Modelizer
     target.extend Modelizer::Validations
   end
 
+  @@namespace = true
+  def self.namespace?; @@namespace end
+  def self.namespace= ns; @@namespace = ns end
+
   def self.underscore classname
     classname.gsub(/::/, '_').
       gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
@@ -62,7 +66,8 @@ module Modelizer
       ::Modelizer.cache[klass] = [defaults, block]
 
       klass = klass.name
-      model = ::Modelizer.underscore klass
+      nsklass = Modelizer.namespace? ? klass : klass.split("::").last
+      model = ::Modelizer.underscore nsklass
 
       module_eval <<-END, __FILE__, __LINE__ + 1
         def valid_#{model}_attributes extras = {}
