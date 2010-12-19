@@ -8,6 +8,18 @@ module Modelizer
 
   include Modelizer::Assertions
 
+  # Test classes that should be considered abstract when rendering
+  # tests for a model template.
+
+  TEST_CLASSES = []
+
+  %w(Test::Unit::TestCase Minitest::Unit::TestCase
+     ActiveSupport::TestCase).each do |k|
+
+    TEST_CLASSES <<
+      k.split("::").inject(Object) { |a, b| a.const_get b } rescue nil
+  end
+
   @@cache = {}
   def self.cache; @@cache end
 
@@ -104,7 +116,7 @@ module Modelizer
         end
       END
 
-      if [Test::Unit::TestCase, ActiveSupport::TestCase].include? self
+      if TEST_CLASSES.include? self
         eval <<-END, nil, file, line - 2
           class ::ModelTemplateFor#{klass}Test < ActiveSupport::TestCase
             #{test}
