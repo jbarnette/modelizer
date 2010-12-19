@@ -1,3 +1,8 @@
+=== 2.1.0 / 2010-12-18
+
+* Allow namespaces in helper names to be disabled.
+* Don't assume test superclasses are loaded.
+
 === 2.0.0 / 2010-07-15
 
 * Remove ActiveSupport assumption, tweak for Rails 3.
