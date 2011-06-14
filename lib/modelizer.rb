@@ -45,7 +45,7 @@ module Modelizer
   end
 
   def assign_model_template_attributes model, attributes
-    model.send :attributes=, attributes, false
+    model.assign_attributes attributes, without_protection: true
     model
   end
 
