@@ -1,3 +1,8 @@
+=== 4.0.0 / 2011-06-14
+
+* Update for AR 3.1.
+* Add public API for class -> method name transformations.
+
 === 3.0.0 / 2010-12-18
 
 * Remove ill-advised namespace= introduced in 2.1.0.

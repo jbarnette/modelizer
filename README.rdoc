@@ -5,7 +5,7 @@
 == Description
 
 Need a simple, consistent way to create model instances and check
-validations in your Rails tests? Use the Modelizer.
+validations in your ActiveRecord 3.1+ tests? Use the Modelizer.
 
 == Examples
 
@@ -78,7 +78,7 @@ The third argument is optional.
 
 == License
 
-Copyright 2009-10 John Barnette (code@jbarnette.com)
+Copyright 2009-11 John Barnette (code@jbarnette.com)
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
