@@ -1,6 +1,7 @@
 === 5.0.0 / 2011-09-11
 
 * Complete breaking change, now provides unified fixtures/factories.
+* Require Ruby 1.9.2 or better.
 
 === 4.0.0 / 2011-06-14
 

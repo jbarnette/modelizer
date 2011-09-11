@@ -10,4 +10,6 @@ Hoe.spec "modelizer" do
   self.history_file     = "CHANGELOG.rdoc"
   self.readme_file      = "README.rdoc"
   self.testlib          = :minitest
+
+  self.required_ruby_version = ">= 1.9.2"
 end
