@@ -13,7 +13,7 @@ don't trust the docs, since lots changed in 5.x and I got lazy.
 First, enable the Modelizer in your test helper. In Rails, try
 something like:
 
-    require "modelizer/all
+    require "modelizer/all"
 
     class ActiveSupport::TestCase
       include Modelizer
