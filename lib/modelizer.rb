@@ -1,6 +1,9 @@
 require "zlib"
 
 module Modelizer
+
+  VERSION = "5.0.0"
+
   def build name, overrides = nil, &block
     model, *initializers = Modelizer.factories[name]
     raise "Can't find the \"#{name}\" factory." unless model
