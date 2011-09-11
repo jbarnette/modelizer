@@ -11,5 +11,5 @@ Hoe.spec "modelizer" do
   self.readme_file      = "README.rdoc"
   self.testlib          = :minitest
 
-  self.required_ruby_version = ">= 1.9.2"
+  require_ruby_version ">= 1.9.2"
 end
