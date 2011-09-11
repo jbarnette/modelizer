@@ -1,138 +1,99 @@
-require "modelizer/assertions"
-require "modelizer/validations"
+require "zlib"
 
 module Modelizer
+  def build name, overrides = nil, &block
+    model, *initializers = Modelizer.factories[name]
+    raise "Can't find the \"#{name}\" factory." unless model
 
-  # Duh.
-  VERSION = "4.0.0"
+    obj = model.new
 
-  include Modelizer::Assertions
+    initializers << block if block_given?
+    initializers.each { |i| instance_exec obj, &i }
 
-  # Test classes that should be considered abstract when rendering
-  # tests for a model template.
-
-  TEST_CLASSES = []
-
-  %w(Test::Unit::TestCase Minitest::Unit::TestCase
-     ActiveSupport::TestCase).each do |k|
-
-    TEST_CLASSES <<
-      k.split("::").inject(Object) { |a, b| a.const_get b } rescue nil
+    overrides.each { |k, v| obj.send "#{k}=", v } if overrides
+    
+    obj
   end
 
-  @@cache = {}
-  def self.cache; @@cache end
+  def create name, overrides = nil, &block
+    obj = build name, overrides, &block
 
-  def self.included target
-    target.extend ClassMethods
-    target.extend Modelizer::Validations
+    obj.save!
+
+    obj
   end
 
-  def self.method_name_for model_class
-    underscore model_class.name
+  def use name
+    model, id = Modelizer.ids[name]
+    raise "Can't find the \"#{name}\" fixture." unless model
+
+    model.find id
   end
 
-  def self.model_class_for test_class
-    test_class.name.gsub(/Test$/, "").constantize
-  end
+  class Context < Struct.new(:instances)
+    def identify name
+      Modelizer.identify name
+    end
 
-  def self.underscore classname
-    classname.gsub(/::/, '_').
-      gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
-      gsub(/([a-z\d])([A-Z])/,'\1_\2').
-      tr("-", "_").
-      downcase
-  end
-
-  def assign_model_template_attributes model, attributes
-    model.assign_attributes attributes, without_protection: true
-    model
-  end
-
-  def valid_model_template_attributes klass, extras = {}
-    defaults, block = ::Modelizer.cache[klass]
-    lazy = block && instance_eval(&block)
-    [defaults, lazy, extras].compact.inject { |t, s| t.merge s }
-  end
-
-  def valid_model_template_attributes_without klass, excluded
-    valid_model_template_attributes(klass).delete_if do |k, v|
-      excluded.include? k
+    def use name
+      instances[name] or raise "Can't find the \"#{name}\" fixture."
     end
   end
 
-  module ClassMethods
-    def model_template_for klass, defaults = {}, &block
-      if defaults.nil? && !block
-        raise ArgumentError, "default attributes or lazy block required"
-      end
+  def self.included klass
+    Dir[glob].sort.each { |f| instance_eval File.read(f), f, 1 }
 
-      ::Modelizer.cache[klass] = [defaults, block]
+    instances = {}
+    context   = Context.new instances
 
-      model = ::Modelizer.method_name_for klass
-      klass = klass.name
-
-      module_eval <<-END, __FILE__, __LINE__ + 1
-        def valid_#{model}_attributes extras = {}
-          valid_model_template_attributes #{klass}, extras
-        end
-
-        def valid_#{model}_attributes_without *excluded
-          valid_model_template_attributes_without #{klass}, excluded
-        end
-
-        def new_#{model} extras = {}
-          assign_model_template_attributes #{klass}.new,
-            valid_model_template_attributes(#{klass}, extras)
-        end
-
-        def new_#{model}_without *excluded
-          assign_model_template_attributes #{klass}.new,
-            valid_model_template_attributes_without(#{klass}, excluded)
-        end
-
-        def create_#{model} extras = {}
-          (m = new_#{model}(extras)).save; m
-        end
-
-        def create_#{model}! extras = {}
-          (m = new_#{model}(extras)).save!; m
-        end
-
-        def create_#{model}_without *excluded
-          (m = new_#{model}_without(*excluded)).save; m
-        end
-
-        def create_#{model}_without! *excluded
-          (m = new_#{model}_without(*excluded)).save!; m
-        end
-      END
-
-      # Install a test that ensures the model template is valid. If
-      # the template is defined in one of the abstract test
-      # superclasses, generate a whole new testcase. If it's in a
-      # concrete test, just generate a method.
-
-      file, line = caller.first.split ":"
-      line = line.to_i
-
-      test = <<-END
-        def test_model_template_for_#{model}
-          assert (m = new_#{model}).valid?,
-            "#{klass} template is invalid: " +
-              m.errors.full_messages.to_sentence
-        end
-      END
-
-      if TEST_CLASSES.include? self
-        eval <<-END, nil, file, line - 2
-          class ::ModelTemplateFor#{klass}Test < ActiveSupport::TestCase
-            #{test}
-          end
-        END
-      else
-        module_eval test, file, line - 1
-      end
+    fixtures.each do |name, value|
+      instances[name] = value.first.new
     end
+
+    instances.each do |name, obj|
+      _, *initializers = fixtures[name]
+      initializers.each { |i| context.instance_exec obj, &i }
+
+      obj.id    = identify name
+      ids[name] = [obj.class, obj.id]
+    end
+
+    ActiveRecord::Base.transaction do
+      instances.each { |_, obj| obj.save! }
+    end
+  end
+
+  class << self
+    attr_accessor :glob
+  end
+
+  self.glob = "test/{factories,fixtures}/**/*.rb"
+
+  def self.cache
+    @cache ||= {}
+  end
+
+  def self.factory name, model, &initializer
+    factories[name] = [model, initializer]
+  end
+
+  def self.factories
+    @factories ||= {}
+  end
+
+  def self.fixture name, model, &initializer
+    fixtures[name] = [model, initializer]
+  end
+
+  def self.fixtures
+    @fixtures ||= {}
+  end
+
+  def self.identify name
+    Zlib.crc32(name.to_s) % (2 ** 30 - 1)
+  end
+
+  def self.ids
+    @ids ||= {}
   end
 end

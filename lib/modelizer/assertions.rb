@@ -13,4 +13,6 @@ module Modelizer
       assert_match match, model.errors.on(attribute) if match
     end
   end
+
+  include Assertions
 end
