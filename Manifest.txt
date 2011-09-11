@@ -4,7 +4,7 @@ Manifest.txt
 README.rdoc
 Rakefile
 lib/modelizer.rb
+lib/modelizer/all.rb
 lib/modelizer/assertions.rb
 lib/modelizer/validations.rb
 test/test_assertions.rb
-test/test_modelizer.rb
