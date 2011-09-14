@@ -62,7 +62,11 @@ module Modelizer
     end
 
     ActiveRecord::Base.transaction do
-      instances.each { |_, obj| obj.save! }
+      instances.each do |name, obj|
+        unless obj.save
+          raise "'#{name}' fixture can't be saved: #{obj.errors.full_messages}"
+        end
+      end
     end
   end
 
