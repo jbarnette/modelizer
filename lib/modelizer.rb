@@ -2,7 +2,7 @@ require "zlib"
 
 module Modelizer
 
-  VERSION = "5.0.0"
+  VERSION = "5.0.1"
 
   def build name, overrides = nil, &block
     model, *initializers = Modelizer.factories[name]
