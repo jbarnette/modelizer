@@ -4,40 +4,45 @@ module Modelizer
 
   VERSION = "5.0.1"
 
-  def build name, overrides = nil, &block
-    model, *initializers = Modelizer.factories[name]
-    raise "Can't find the \"#{name}\" factory." unless model
+  module Helpers
+    def build name, overrides = nil, &block
+      model, *initializers = Modelizer.factories[name]
+      raise "Can't find the \"#{name}\" factory." unless model
 
-    obj = model.new
+      obj = model.new
+      ctx = FactoryContext.new overrides || {}
 
-    initializers << block if block_given?
-    initializers.each { |i| instance_exec obj, &i }
+      initializers << block if block_given?
 
-    overrides.each { |k, v| obj.send "#{k}=", v } if overrides
-    
-    obj
+      initializers.each { |i| ctx.instance_exec obj, &i }
+      overrides.each    { |k, v| obj.send "#{k}=", v } if overrides
+      
+      obj
+    end
+
+    def create name, overrides = nil, &block
+      obj = build name, overrides, &block
+
+      obj.save!
+
+      obj
+    end
+
+    def use name
+      model, id = Modelizer.ids[name]
+      raise "Can't find the \"#{name}\" fixture." unless model
+
+      model.find id
+    end
   end
 
-  def create name, overrides = nil, &block
-    obj = build name, overrides, &block
-
-    obj.save!
-
-    obj
-  end
-
-  def use name
-    model, id = Modelizer.ids[name]
-    raise "Can't find the \"#{name}\" fixture." unless model
-
-    model.find id
-  end
+  include Helpers
 
   def self.included klass
     Dir[glob].sort.each { |f| instance_eval File.read(f), f, 1 }
 
     instances = {}
-    context   = Context.new instances
+    context   = FixtureContext.new instances
 
     fixtures.each do |name, value|
       instances[name] = value.first.new
@@ -94,7 +99,15 @@ module Modelizer
     @ids ||= {}
   end
 
-  class Context < Struct.new(:instances)
+  class FactoryContext < Struct.new(:overrides)
+    include Helpers
+
+    def build name, *args, &block
+      self.overrides[name] || super
+    end
+  end
+
+  class FixtureContext < Struct.new(:instances)
     def identify name
       Modelizer.identify name
     end
