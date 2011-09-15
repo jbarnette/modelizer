@@ -33,16 +33,6 @@ module Modelizer
     model.find id
   end
 
-  class Context < Struct.new(:instances)
-    def identify name
-      Modelizer.identify name
-    end
-
-    def use name
-      instances[name] or raise "Can't find the \"#{name}\" fixture."
-    end
-  end
-
   def self.included klass
     Dir[glob].sort.each { |f| instance_eval File.read(f), f, 1 }
 
@@ -102,5 +92,15 @@ module Modelizer
 
   def self.ids
     @ids ||= {}
+  end
+
+  class Context < Struct.new(:instances)
+    def identify name
+      Modelizer.identify name
+    end
+
+    def use name
+      instances[name] or raise "Can't find the \"#{name}\" fixture."
+    end
   end
 end
