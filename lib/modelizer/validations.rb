@@ -1,23 +1,23 @@
 module Modelizer
   module Validations
-    def test_presence_for plan, attribute
+    def test_presence_for factory, attribute
       define_method "test_#{attribute}_presence" do
-        bad = build plan, attribute => nil
+        bad = build factory, attribute => nil
         assert_invalid attribute, bad
       end
     end
 
-    def test_uniqueness_for plan, attribute
+    def test_uniqueness_for factory, attribute
       define_method "test_#{attribute}_uniqueness" do
-        good = create plan
-        bad  = build(plan) { |o| o.send("#{attribute}=", good.send(attribute)) }
+        good = create factory
+        bad  = build factory, attribute => good.send(attribute)
         assert_invalid attribute, bad
       end
     end
 
-    def test_validations_for plan, attribute, *validations
+    def test_validations_for factory, attribute, *validations
       validations.each do |validation|
-        send "test_#{validation}_for", plan, attribute
+        send "test_#{validation}_for", factory, attribute
       end
     end
   end
